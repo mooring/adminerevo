@@ -28,7 +28,7 @@ $translations = array(
 	'The action will be performed after successful login with the same credentials.' => '此操作将在成功使用相同的凭据登录后执行。',
 	'%s version: %s through PHP extension %s' => '%s 版本：%s， 使用PHP扩展 %s',
 	'Refresh' => '刷新',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
 
@@ -88,8 +88,8 @@ $translations = array(
 	'Data' => '数据',
 
 	'Database' => '数据库',
-	'database' => '数据库',
-	'DB' => '数据库',
+	'database' => 'DB',
+	'DB' => 'DB',
 	'Use' => '使用',
 	'Select database' => '选择数据库',
 	'Invalid database.' => '无效数据库。',

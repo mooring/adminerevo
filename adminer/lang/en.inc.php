@@ -12,4 +12,6 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => array('%d e-mail has been sent.', '%d e-mails have been sent.'),
 	'%d in total' => '%d in total',
 	'%d query(s) executed OK.' => array('%d query executed OK.', '%d queries executed OK.'),
+	'SQL command' => 'SQL',
+	'Create table' => 'New'
 );

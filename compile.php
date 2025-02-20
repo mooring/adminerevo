@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
-function adminer_errors($errno, $errstr) {
+function adminer_errors($errno, $errstr)
+{
 	return !!preg_match('~^(Trying to access array offset on value of type null|Undefined array key)~', $errstr);
 }
 
@@ -12,11 +13,13 @@ set_error_handler('adminer_errors', E_WARNING);
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
-function add_apo_slashes($s) {
+function add_apo_slashes($s)
+{
 	return addcslashes($s, "\\'");
 }
 
-function add_quo_slashes($s) {
+function add_quo_slashes($s)
+{
 	$return = $s;
 	$return = addcslashes($return, "\n\r\$\"\\");
 	$return = preg_replace('~\0(?![0-7])~', '\\\\0', $return);
@@ -24,7 +27,8 @@ function add_quo_slashes($s) {
 	return $return;
 }
 
-function remove_lang($match) {
+function remove_lang($match)
+{
 	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
 	$s = ($translations[$idf] ? $translations[$idf] : $idf);
@@ -34,7 +38,8 @@ function remove_lang($match) {
 	return ($match[1] && $match[4] ? $s : "$match[1]'" . add_apo_slashes($s) . "'$match[4]");
 }
 
-function lang_ids($match) {
+function lang_ids($match)
+{
 	global $lang_ids;
 	$lang_id = &$lang_ids[stripslashes($match[1])];
 	if ($lang_id === null) {
@@ -43,7 +48,8 @@ function lang_ids($match) {
 	return ($_SESSION["lang"] ? $match[0] : "lang($lang_id$match[2]");
 }
 
-function put_file($match) {
+function put_file($match)
+{
 	global $project, $VERSION, $driver;
 	if (basename($match[2]) == '$LANG.inc.php') {
 		return $match[0]; // processed later
@@ -106,12 +112,13 @@ function lang(\$translation, \$number = null) {
 	}
 }
 
-function lzw_compress($string) {
+function lzw_compress($string)
+{
 	// compression
 	$dictionary = array_flip(range("\0", "\xFF"));
 	$word = "";
 	$codes = array();
-	for ($i=0; $i <= strlen($string); $i++) {
+	for ($i = 0; $i <= strlen($string); $i++) {
 		$x = @$string[$i];
 		if (strlen($x) && isset($dictionary[$word . $x])) {
 			$word .= $x;
@@ -143,7 +150,8 @@ function lzw_compress($string) {
 	return $return . ($rest_length ? chr($rest << (8 - $rest_length)) : "");
 }
 
-function put_file_lang($match) {
+function put_file_lang($match)
+{
 	global $lang_ids, $project, $langs;
 	if ($_SESSION["lang"]) {
 		return "";
@@ -184,7 +192,8 @@ if (!$translations) {
 ';
 }
 
-function short_identifier($number, $chars) {
+function short_identifier($number, $chars)
+{
 	$return = '';
 	while ($number >= 0) {
 		$return .= $chars[$number % strlen($chars)];
@@ -194,7 +203,8 @@ function short_identifier($number, $chars) {
 }
 
 // based on http://latrine.dgx.cz/jak-zredukovat-php-skripty
-function php_shrink($input) {
+function php_shrink($input)
+{
 	global $VERSION, $random_sha1;
 	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER', '$http_response_header', '$php_errormsg'));
 	$short_variables = array();
@@ -250,17 +260,18 @@ function php_shrink($input) {
 	$output = '';
 	$in_echo = false;
 	$doc_comment = false; // include only first /**
-	for (reset($tokens); list($i, $token) = each($tokens); ) {
+	for (reset($tokens); list($i, $token) = each($tokens);) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
-		if (!is_null($tokens[$i+2])
-			&& $tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
-			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
+		if (
+			!is_null($tokens[$i + 2])
+			&& $tokens[$i + 2][0] === T_CLOSE_TAG && $tokens[$i + 3][0] === T_INLINE_HTML && $tokens[$i + 4][0] === T_OPEN_TAG
+			&& strlen(add_apo_slashes($tokens[$i + 3][1])) < strlen($tokens[$i + 3][1]) + 3
 		) {
-			$tokens[$i+2] = array(T_ECHO, 'echo');
-			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i+3][1]) . "'");
-			$tokens[$i+4] = array(0, ';');
+			$tokens[$i + 2] = array(T_ECHO, 'echo');
+			$tokens[$i + 3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i + 3][1]) . "'");
+			$tokens[$i + 4] = array(0, ';');
 		}
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
 			$space = "\n";
@@ -278,11 +289,11 @@ function php_shrink($input) {
 			} elseif ($token[0] == T_ECHO) {
 				$in_echo = true;
 			} elseif ($token[1] == ';' && $in_echo) {
-				if ($tokens[$i+1][0] === T_WHITESPACE && $tokens[$i+2][0] === T_ECHO) {
+				if ($tokens[$i + 1][0] === T_WHITESPACE && $tokens[$i + 2][0] === T_ECHO) {
 					next($tokens);
 					$i++;
 				}
-				if ($tokens[$i+1][0] === T_ECHO) {
+				if ($tokens[$i + 1][0] === T_ECHO) {
 					// join two consecutive echos
 					next($tokens);
 					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and "," but not $var","
@@ -302,18 +313,21 @@ function php_shrink($input) {
 	return $output;
 }
 
-function minify_css($file) {
+function minify_css($file)
+{
 	return lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*\*/~sU', '', $file)));
 }
 
-function minify_js($file) {
+function minify_js($file)
+{
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}
 	return lzw_compress($file);
 }
 
-function compile_file($match) {
+function compile_file($match)
+{
 	global $project;
 	$file = "";
 	list(, $filenames, $callback) = $match;
@@ -329,22 +343,26 @@ function compile_file($match) {
 }
 
 if (!function_exists("each")) {
-	function each(&$arr) {
+	function each(&$arr)
+	{
 		$key = key($arr);
 		next($arr);
 		return $key === null ? false : array($key, $arr[$key]);
 	}
 }
 
-function min_version() {
+function min_version()
+{
 	return true;
 }
 
-function number_type() {
+function number_type()
+{
 	return '';
 }
 
-function ini_bool($ini) {
+function ini_bool($ini)
+{
 	$val = ini_get($ini);
 	return (preg_match('~^(on|true|yes)$~i', $val) || (int) $val); // boolean values set by php_value are strings
 }
