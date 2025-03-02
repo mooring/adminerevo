@@ -32,9 +32,19 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 		<?php foreach ($adminer->css() as $css) { ?>
 			<link rel="stylesheet" type="text/css" href="<?php echo h($css); ?>">
 		<?php } ?>
-	<?php } ?>
+	<?php }
+	$url = $_SERVER['REQUEST_URI'];
+	$bodyclass = 'open';
+	if (strpos($url, 's=close') !== false) {
+		$bodyclass = 'close';
+		$url = preg_replace('/\?s=close&+/', '?', $url);
+	} else {
+		$bodyclass = '';
+		$url = preg_replace('/\?/', '?s=close&', $url);
+	}
+	?>
 
-	<body class="<?php echo lang('ltr'); ?> nojs <?php echo $GLOBALS['project']; ?>">
+	<body class="<?php echo lang('ltr') . ' ' . $bodyclass; ?> nojs <?php echo $GLOBALS['project']; ?>">
 		<?php
 		$filename = get_temp_dir() . "/adminer.version";
 		if (!$_COOKIE["adminer_version"] && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
@@ -58,7 +68,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 				<?php
 				if ($breadcrumb !== null) {
 					$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-					echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
+					echo '<p id="breadcrumb"><a class="hideshow" href="' . $url . '">&nbsp;</a>&nbsp;&nbsp;<a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
 					$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 					$server = $adminer->serverName(SERVER);
 					$server = ($server != "" ? $server : lang('Server'));
@@ -83,7 +93,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 						echo "$title\n";
 					}
 				}
-				echo "<h2>$title_all</h2>\n";
+				// echo "<h2>$title_all</h2>\n";
 				echo "<div id='ajaxstatus' class='jsonly hidden'></div>\n";
 				restart_session();
 				page_messages($error);

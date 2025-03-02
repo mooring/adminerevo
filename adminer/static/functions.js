@@ -189,7 +189,7 @@ function selectCount(id, count) {
 */
 function formCheck(name) {
 	var elems = this.form.elements;
-	for (var i=0; i < elems.length; i++) {
+	for (var i = 0; i < elems.length; i++) {
 		if (name.test(elems[i].name)) {
 			elems[i].checked = this.checked;
 			trCheck(elems[i]);
@@ -201,7 +201,7 @@ function formCheck(name) {
 */
 function tableCheck() {
 	var inputs = qsa('table.checkable td:first-child input');
-	for (var i=0; i < inputs.length; i++) {
+	for (var i = 0; i < inputs.length; i++) {
 		trCheck(inputs[i]);
 	}
 }
@@ -223,7 +223,7 @@ function formUncheck(id) {
 function formChecked(el, name) {
 	var checked = 0;
 	var elems = el.form.elements;
-	for (var i=0; i < elems.length; i++) {
+	for (var i = 0; i < elems.length; i++) {
 		if (name.test(elems[i].name) && elems[i].checked) {
 			checked++;
 		}
@@ -287,7 +287,7 @@ function checkboxClick(event) {
 		var checked = (lastChecked ? lastChecked.checked : true);
 		var inputs = qsa('input', parentTag(this, 'table'));
 		var checking = !lastChecked;
-		for (var i=0; i < inputs.length; i++) {
+		for (var i = 0; i < inputs.length; i++) {
 			var input = inputs[i];
 			if (input.name === this.name) {
 				if (checking) {
@@ -375,12 +375,12 @@ function selectAddRow() {
 	field.onchange = selectFieldChange;
 	field.onchange();
 	var selects = qsa('select', row);
-	for (var i=0; i < selects.length; i++) {
+	for (var i = 0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
 	var inputs = qsa('input', row);
-	for (var i=0; i < inputs.length; i++) {
+	for (var i = 0; i < inputs.length; i++) {
 		if (inputs[i].type === 'image') {
 			// button
 			continue;
@@ -394,7 +394,7 @@ function selectAddRow() {
 		}
 	}
 	var buttons = qsa('.icon', row);
-	for (var i=0; i < buttons.length; i++) {
+	for (var i = 0; i < buttons.length; i++) {
 		buttons[i].onclick = selectRemoveRow;
 	}
 	field.parentNode.parentNode.appendChild(row);
@@ -444,7 +444,7 @@ function selectSearchSearch() {
 */
 function columnMouse(className) {
 	var spans = qsa('span', this);
-	for (var i=0; i < spans.length; i++) {
+	for (var i = 0; i < spans.length; i++) {
 		if (/column/.test(spans[i].className)) {
 			spans[i].className = 'column' + (className || '');
 		}
@@ -461,7 +461,7 @@ function selectSearch(name) {
 	var el = qs('#fieldset-search');
 	el.className = '';
 	var divs = qsa('div', el);
-	for (var i=0; i < divs.length; i++) {
+	for (var i = 0; i < divs.length; i++) {
 		var div = divs[i];
 		var el = qs('[name$="[col]"]', div);
 		if (el && selectValue(el) == name) {
@@ -577,7 +577,7 @@ function functionChange() {
 				input.setAttribute('data-maxlength', input.origMaxLength);
 			}
 		}
-		oninput({target: input});
+		oninput({ target: input });
 	}
 	helpClose();
 }
@@ -885,8 +885,8 @@ function findDefaultSubmit(el) {
  */
 function setupCopyToClipboard(document) {
 	var node = document.querySelectorAll("a.copy-to-clipboard");
-	node.forEach(function(element) {
-		element.addEventListener("click", function() {
+	node.forEach(function (element) {
+		element.addEventListener("click", function () {
 			var nodeSql = document.querySelector("code.copy-to-clipboard");
 			if (nodeSql == null || nodeSql == undefined) {
 				nodeSql = document.querySelector("textarea.sqlarea");
@@ -956,7 +956,7 @@ function cloneNode(el) {
 	var selector = 'input, select';
 	var origEls = qsa(selector, el);
 	var cloneEls = qsa(selector, el2);
-	for (var i=0; i < origEls.length; i++) {
+	for (var i = 0; i < origEls.length; i++) {
 		var origEl = origEls[i];
 		for (var key in origEl) {
 			if (/^on/.test(key) && origEl[key]) {
@@ -973,3 +973,4 @@ oninput = function (event) {
 	var maxLength = target.getAttribute('data-maxlength');
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
+
