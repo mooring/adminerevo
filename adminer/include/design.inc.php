@@ -17,6 +17,8 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
+	$bodyclass = preg_replace('/[^a-z]+/', '', $_COOKIE['s']);
+	$bodyclass = $bodyclass == '' ? '' : 'close';
 ?>
 	<!DOCTYPE html>
 	<html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
@@ -33,15 +35,6 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 			<link rel="stylesheet" type="text/css" href="<?php echo h($css); ?>">
 		<?php } ?>
 	<?php }
-	$url = $_SERVER['REQUEST_URI'];
-	$bodyclass = 'open';
-	if (strpos($url, 's=close') !== false) {
-		$bodyclass = 'close';
-		$url = preg_replace('/\?s=close&+/', '?', $url);
-	} else {
-		$bodyclass = '';
-		$url = preg_replace('/\?/', '?s=close&', $url);
-	}
 	?>
 
 	<body class="<?php echo lang('ltr') . ' ' . $bodyclass; ?> nojs <?php echo $GLOBALS['project']; ?>">
@@ -52,10 +45,20 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 			$_COOKIE["adminer_version"] = $version["version"]; // doesn't need to send to the browser
 		}
 		?>
-		<script<?php echo nonce(); ?>>
+		<script <?php echo nonce(); ?>>
+			function ourl(url, act){
+				document.cookie = 's='+act;
+				location.href = url;
+			}
+			window.onload = function(){
+				document.querySelector('#breadcrumb a.hideshow').onclick=function(){
+					var c = document.body.classList.contains('close') ? '' : 'close';
+					ourl(location.href, c);
+				}
+			};
 			mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php
-																			echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')"); // $token may be empty in auth.inc.php
-																			?>});
+				echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')"); // $token may be empty in auth.inc.php
+			?>});
 			document.body.className = document.body.className.replace(/ nojs/, ' js');
 			var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 			var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
@@ -68,7 +71,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 				<?php
 				if ($breadcrumb !== null) {
 					$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-					echo '<p id="breadcrumb"><a class="hideshow" href="' . $url . '">&nbsp;</a>&nbsp;&nbsp;<a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
+					echo '<p id="breadcrumb"><a class="hideshow" href="#">&nbsp;</a>&nbsp;&nbsp;<a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
 					$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 					$server = $adminer->serverName(SERVER);
 					$server = ($server != "" ? $server : lang('Server'));
@@ -134,7 +137,8 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "")
 			{
 				return array(
 					array(
-						"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
+						"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", 
+						// 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
 						"connect-src" => "'self' https://api.github.com/repos/adminerevo/adminerevo/releases/latest",
 						"frame-src" => "'self'",
 						"object-src" => "'none'",

@@ -380,7 +380,7 @@ form[method="post"] fieldset > div > p{
 
 /* .edit used in designs */
 #menu {
-	position: fixed;
+	position: absolute;
 	margin: 10px 0 0;
 	padding: 0 0 30px 0;
 	top: 2em;
@@ -530,7 +530,7 @@ form[method="post"] fieldset > div > p{
 }
 
 #lang {
-	position: fixed;
+	position: absolute;
 	top: 0;
 	left: 0;
 	line-height: 1.8em;
@@ -545,9 +545,8 @@ form[method="post"] fieldset > div > p{
 	background: #eee;
 	height: 2em;
 	line-height: 1.8em;
-	padding: 0 1em;
+	padding: 0 2em;
 	margin: 0 0 0 -18px;
-	width: 100%;
 }
 
 #h1 {
