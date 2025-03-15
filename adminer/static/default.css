@@ -316,11 +316,20 @@ p.nowrap {
 }
 
 .sqlarea {
-	width: 98%;
+	width: -webkit-fill-available;
 	border-radius: 5px;
 	font-size: 110%;
+	max-width: calc(100vw - 350px);
+	white-space: break-spaces;
 }
-
+#content .scrollable{
+	max-width: calc(100vw - 350px);
+	overflow-x: auto;
+	padding-bottom: 1em;
+}
+#content #ajaxstatus + pre > code {
+	white-space: break-spaces;
+}
 .icon {
 	width: 18px;
 	height: 18px;
